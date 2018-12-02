@@ -96,7 +96,7 @@ class QueryBuilder extends Component
         $fields = [];
         foreach ($select as $alias => $field) {
             if (is_int($alias)) {
-                if (strpos(strtoupper($field), 'AS') === false) {
+                if (!preg_match('#(?<!\w)as(?!\w)#i', $field)) {
                     $fields[] = $field;
                 } else {
                     list($field, $alias) = preg_split('#(?<!\w)as(?!\w)#i', $field);
