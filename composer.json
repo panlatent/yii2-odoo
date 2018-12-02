@@ -8,7 +8,8 @@
     },
     "require-dev": {
         "codeception/codeception": "^2.5",
-        "php-coveralls/php-coveralls": "^2.1"
+        "php-coveralls/php-coveralls": "^2.1",
+        "yiisoft/yii2-debug": "^2.0"
     },
     "license": "MIT",
     "authors": [

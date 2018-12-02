@@ -60,6 +60,21 @@ Add the component to your application.
 ]
 ```
 
+The extension support Yii2 Debug extension:
+
+Add the panel component to your application.
+```php
+'modules' => [
+    'debug' => [
+        'panels' => [
+            'odoo' => [
+                'class' => panlatent\odoo\debug\OdooPanel::class,
+            ]
+        ]
+    ]
+]
+```
+
 License
 -------
 The Yii2 Odoo is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).

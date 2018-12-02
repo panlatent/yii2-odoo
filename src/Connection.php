@@ -261,9 +261,18 @@ class Connection extends Component
      */
     public function authenticate(string $database, string $username, string $password)
     {
+        $enableProfiling = $this->enableLogging && $this->enableProfiling;
+        if ($enableProfiling) {
+            Yii::beginProfile("Authenticate Odoo database $database use $username", __METHOD__);
+        }
+
         $result = $this->sendCallRequest(static::COMMON, 'authenticate', [$database, $username, $password, []], false);
 
         $this->enableLogging and Yii::info("Authenticate Odoo database $database use $username", __METHOD__);
+
+        if ($enableProfiling) {
+            Yii::endProfile("Authenticate Odoo database $database use $username", __METHOD__);
+        }
 
         return (int)$result;
     }
