@@ -7,7 +7,8 @@
         "graze/guzzle-jsonrpc": "^3.0"
     },
     "require-dev": {
-        "codeception/codeception": "^2.5"
+        "codeception/codeception": "^2.5",
+        "php-coveralls/php-coveralls": "^2.1"
     },
     "license": "MIT",
     "authors": [
