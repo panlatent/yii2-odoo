@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://www.odoo.com/" target="_blank" rel="external">
-        <img src="./docs/_static/logo.svg" height="80px">
+        <img src="https://raw.githubusercontent.com/panlatent/yii2-odoo/master/docs/_static/logo.svg" height="80px">
     </a>
     <h1 align="center">Odoo JSON-RPC Client, Query and ActiveRecord for Yii2</h1>
     <br>
