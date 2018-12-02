@@ -1,0 +1,25 @@
+{
+    "name": "panlatent/yii2-odoo",
+    "description": "Yii2 Odoo extension",
+    "type": "yii2-extension",
+    "require": {
+        "yiisoft/yii2": "^2.0",
+        "graze/guzzle-jsonrpc": "^3.0"
+    },
+    "require-dev": {
+        "codeception/codeception": "^2.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "panlatent",
+            "email": "panlatent@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "panlatent\\odoo\\": "src/"
+        }
+    }
+}
