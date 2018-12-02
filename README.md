@@ -1,11 +1,17 @@
 <p align="center">
-    <a href="https://www.odoo.com" target="_blank" rel="external">
+    <a href="https://www.odoo.com/" target="_blank" rel="external">
         <img src="./docs/_static/logo.svg" height="80px">
     </a>
+    <h1 align="center">Odoo JSON-RPC Client, API, Query and ActiveRecord for Yii2.</h1>
+    <br>
 <p>
 
-Yii2 Odoo Extension
-===================
+This extension provides the [Odoo](https://www.odoo.com) integration for the [Yii framework 2.0](http://www.yiiframework.com/).
+It includes [Web Service API](https://www.odoo.com/documentation/10.0/api_integration.html) support and also implements
+the `Query` and `ActiveRecord` pattern.
+
+Documentation is at [Read The Docs](https://yii2-odoo.panlatent.com/).
+
 [![Build Status](https://travis-ci.org/panlatent/yii2-odoo.svg)](https://travis-ci.org/panlatent/yii2-odoo)
 [![Coverage Status](https://coveralls.io/repos/github/panlatent/yii2-odoo/badge.svg)](https://coveralls.io/github/panlatent/yii2-odoo)
 [![Latest Stable Version](https://poser.pugx.org/panlatent/yii2-odoo/v/stable.svg)](https://packagist.org/packages/panlatent/yii2-odoo)
@@ -13,7 +19,9 @@ Yii2 Odoo Extension
 [![Latest Unstable Version](https://poser.pugx.org/panlatent/yii2-odoo/v/unstable.svg)](https://packagist.org/packages/panlatent/yii2-odoo)
 [![License](https://poser.pugx.org/panlatent/yii2-odoo/license.svg)](https://packagist.org/packages/panlatent/yii2-odoo)
 
-Odoo JSON-RPC Client, API, Query and ActiveRecord for Yii2.
+Requirements
+------------
++ PHP 7.0 or higher
 
 Installation
 ------------
