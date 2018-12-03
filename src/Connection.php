@@ -9,6 +9,8 @@ namespace panlatent\odoo;
 use Graze\GuzzleHttp\JsonRpc\Client;
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
+use yii\caching\CacheInterface;
 use yii\helpers\Json;
 
 /**
@@ -22,6 +24,7 @@ use yii\helpers\Json;
  * @property-read bool $isGuest
  * @property-read bool $isRequested
  * @property-read string $version
+ * @property CacheInterface $cache
  * @property QueryBuilder $queryBuilder
  */
 class Connection extends Component
@@ -76,12 +79,17 @@ class Connection extends Component
     /**
      * @var string
      */
-    public $cache = 'cache';
+    public $cacheComponent = 'cache';
 
     /**
      * @var bool
      */
-    public $enableUidCache = true;
+    public $enableAuthenticateCache = true;
+
+    /**
+     * @var int
+     */
+    public $authenticateCacheDuration = 7200;
 
     /**
      * @var bool
@@ -107,6 +115,11 @@ class Connection extends Component
      * @var Client|null
      */
     private $_client;
+
+    /**
+     * @var CacheInterface|null
+     */
+    private $_cache;
 
     /**
      * @var Context|null
@@ -232,6 +245,35 @@ class Connection extends Component
     }
 
     /**
+     * @return CacheInterface|null
+     */
+    public function getCache()
+    {
+        if ($this->_cache instanceof CacheInterface) {
+            return $this->_cache;
+        }
+
+        if ($this->_cache) {
+            $cache =  Yii::createObject($this->_cache ?: $this->cacheComponent);
+            if (!$cache instanceof CacheInterface) {
+                throw new InvalidConfigException('Cache component must be implements yii\caching\CacheInterface');
+            }
+        } else {
+            $cache = Yii::$app->get($this->cacheComponent);
+        }
+
+        return $this->_cache = $cache;
+    }
+
+    /**
+     * @param CacheInterface|array|string|null $cache
+     */
+    public function setCache($cache)
+    {
+        $this->_cache = $cache;
+    }
+
+    /**
      * Creates a command for execution.
      *
      * @param array $domain
@@ -261,20 +303,38 @@ class Connection extends Component
      */
     public function authenticate(string $database, string $username, string $password)
     {
+        $uid = false;
+        if ($this->enableAuthenticateCache) {
+            if ($this->getCache()->exists(__METHOD__)) {
+                $uid = $this->getCache()->get(__METHOD__);
+            }
+        }
+
+        $message = "Authenticate Odoo database $database with $username";
+        $uid and $message .= ' (using cache)';
+
         $enableProfiling = $this->enableLogging && $this->enableProfiling;
-        if ($enableProfiling) {
-            Yii::beginProfile("Authenticate Odoo database $database use $username", __METHOD__);
-        }
-
-        $result = $this->sendCallRequest(static::COMMON, 'authenticate', [$database, $username, $password, []], false);
-
-        $this->enableLogging and Yii::info("Authenticate Odoo database $database use $username", __METHOD__);
 
         if ($enableProfiling) {
-            Yii::endProfile("Authenticate Odoo database $database use $username", __METHOD__);
+            Yii::beginProfile($message,  __METHOD__);
         }
 
-        return (int)$result;
+        if (!$uid) {
+            $result = $this->sendCallRequest(static::COMMON, 'authenticate', [$database, $username, $password, []], false);
+            $uid = (int)$result;
+
+            if ($this->enableAuthenticateCache) {
+                $this->getCache()->set(__METHOD__, $uid, $this->authenticateCacheDuration);
+            }
+        }
+
+        $this->enableLogging and Yii::info($message, __METHOD__);
+
+        if ($enableProfiling) {
+            Yii::endProfile($message, __METHOD__);
+        }
+
+        return $uid;
     }
 
     /**
