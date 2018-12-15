@@ -40,7 +40,7 @@ class QueryBuilder extends Component
      */
     public function build(Query $query): array
     {
-        $query = $query->prepare();
+        $query = $query->prepare($this);
 
         $modelName = $query->from;
         $domain = $this->buildCondition($query->where);
@@ -62,10 +62,10 @@ class QueryBuilder extends Component
             }
         }
         if ($query->offset !== null) {
-            $context['offset'] = $query->offset;
+            $context['offset'] = (int)$query->offset;
         }
         if ($query->limit !== null) {
-            $context['limit'] = $query->limit;
+            $context['limit'] = (int)$query->limit;
         }
         if ($query->orderBy !== null) {
             $context['order'] = $query->orderBy;

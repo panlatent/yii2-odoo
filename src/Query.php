@@ -166,9 +166,10 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @param QueryBuilder $builder
      * @return $this
      */
-    public function prepare()
+    public function prepare($builder)
     {
         return $this;
     }
