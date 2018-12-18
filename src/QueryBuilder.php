@@ -119,16 +119,29 @@ class QueryBuilder extends Component
      */
     public function buildCondition($condition)
     {
-        if (is_array($condition) && count($condition) == 3 && is_string($condition[0])) {
-            if ($condition[0] == 'and') {
-                return $this->buildAndCondition(array_slice($condition, 1, 2));
-            } elseif ($condition[0] == 'or') {
-                return $this->buildOrCondition(array_slice($condition, 1, 2));
-            } elseif (in_array($condition[0], ['=', '!=', '<', '>', '<=', '>=', '=?'])) {
-                return $this->buildSimpleCondition($condition[0], [$condition[1], $condition[2]]);
+        if (is_array($condition)) {
+            if (empty($condition)) {
+                return [];
             }
-        } elseif (is_array($condition) && count($condition) == 1) {
-            return [[array_keys($condition)[0], '=', reset($condition)]];
+
+            if (isset($condition[0])) { // count($condition) == 3 &&
+                if ($condition[0] == 'and') {
+                    return $this->buildAndCondition(array_slice($condition, 1, 2));
+                } elseif ($condition[0] == 'or') {
+                    return $this->buildOrCondition(array_slice($condition, 1, 2));
+                } elseif (in_array($condition[0], ['=', '!=', '<', '>', '<=', '>=', '=?'])) {
+                    return $this->buildSimpleCondition($condition[0], [$condition[1], $condition[2]]);
+                }
+            }
+
+            $where = [];
+            foreach ($condition as $key => $value) {
+                if (is_scalar($value)) {
+                    $where[] = [$key, '=', $value];
+                }
+            }
+
+            return $where;
         }
 
         return [];
