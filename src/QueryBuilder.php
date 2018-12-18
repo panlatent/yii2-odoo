@@ -124,7 +124,7 @@ class QueryBuilder extends Component
                 return [];
             }
 
-            if (isset($condition[0])) { // count($condition) == 3 &&
+            if (isset($condition[0])) {
                 if ($condition[0] == 'and') {
                     return $this->buildAndCondition(array_slice($condition, 1, 2));
                 } elseif ($condition[0] == 'or') {
@@ -138,6 +138,8 @@ class QueryBuilder extends Component
             foreach ($condition as $key => $value) {
                 if (is_scalar($value)) {
                     $where[] = [$key, '=', $value];
+                } elseif (is_array($value)) {
+                    $where[] = [$key, 'in', $value];
                 }
             }
 
