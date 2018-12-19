@@ -75,6 +75,19 @@ Add the panel component to your application.
 ]
 ```
 
+The extension support Yii2 Gii extension:
+
+Add the panel component to your application.
+```php
+'modules' => [
+    'gii' => [
+        'generators' => [
+             \panlatent\odoo\gii\generators\model\Generator::class,
+        ]
+    ]
+]
+```
+
 License
 -------
 The Yii2 Odoo is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).

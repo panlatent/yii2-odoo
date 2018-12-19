@@ -21,6 +21,7 @@ use yii\helpers\Json;
  * @package heqiauto\erp\components
  * @property-read Client $client
  * @property-read Db $db
+ * @property-read Schema $schema
  * @property-read bool $isGuest
  * @property-read bool $isRequested
  * @property-read string $version
@@ -102,6 +103,11 @@ class Connection extends Component
     public $enableProfiling = true;
 
     /**
+     * @var string
+     */
+    public $tablePrefix = '';
+
+    /**
      * @var int|null
      */
     protected $uid;
@@ -130,6 +136,11 @@ class Connection extends Component
      * @var Db|null
      */
     private $_db;
+
+    /**
+     * @var Schema|null
+     */
+    private $_schema;
 
     /**
      * @var string|null
@@ -163,6 +174,28 @@ class Connection extends Component
         }
 
         return $this->_db = new Db($this);
+    }
+
+    /**
+     * @return Schema
+     */
+    public function getSchema(): Schema
+    {
+        if ($this->_schema !== null) {
+            return $this->_schema;
+        }
+
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->_schema = Yii::createObject(['class' => Schema::class, 'odoo' => $this]);
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function getTableSchema(string $name)
+    {
+        return $this->getSchema()->getTableSchema($name);
     }
 
     /**
@@ -406,7 +439,7 @@ class Connection extends Component
      */
     public function search(string $model, array $domain = [], array $keywords = []): array
     {
-        return $this->executeKw($model, 'search', [$domain], $keywords);
+        return $this->executeKw($model, 'search', [$domain], $keywords) ?? [];
     }
 
     /**
