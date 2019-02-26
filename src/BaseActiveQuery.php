@@ -38,6 +38,19 @@ abstract class BaseActiveQuery extends Query
     }
 
     /**
+     * @param Connection|null $odoo
+     * @return ActiveRecord|null
+     */
+    public function one($odoo = null)
+    {
+        $result = parent::one($odoo);
+
+        $results = $this->populate([$result]);
+
+        return $results ? reset($results) : null;
+    }
+
+    /**
      * @param QueryBuilder $builder
      * @return Query
      */

@@ -34,14 +34,17 @@ class Connection extends Component
      * Common service.
      */
     const COMMON = 'common';
+
     /**
      * Object service
      */
     const OBJECT = 'object';
+
     /**
      * Db service.
      */
     const DB = 'db';
+
     /**
      * Report service.
      */

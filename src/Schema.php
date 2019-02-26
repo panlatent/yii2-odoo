@@ -30,6 +30,16 @@ class Schema extends Component
     public $defaultSchema;
 
     /**
+     * @var bool
+     */
+    private $_fetchedAllTableSchemas = false;
+
+    /**
+     * @var array
+     */
+    private $_tableSchemas = [];
+
+    /**
      * @return string[]
      */
     public function getTableNames(): array
@@ -42,18 +52,21 @@ class Schema extends Component
      */
     public function getTableSchemas()
     {
-        $tables = [];
+        if ($this->_fetchedAllTableSchemas) {
+            return array_values($this->_tableSchemas);
+        }
+
+        $this->_tableSchemas = [];
 
         $results = $this->odoo->searchRead('ir.model', [], ['fields' => ['model']]);
         foreach ($results as $result) {
-            $tables[] = Yii::createObject([
-                'class' => TableSchema::class
-            ] + [
-                'name' => $result['model'],
-            ]);
+            $tableSchema = $this->_createTableSchema($result);
+            $tables[$tableSchema->name] = $tableSchema;
         }
 
-        return $tables;
+        $this->_fetchedAllTableSchemas = true;
+
+        return array_values($this->_tableSchemas);
     }
 
     /**
@@ -62,9 +75,9 @@ class Schema extends Component
      */
     public function getTableSchema(string $tableName = null)
     {
-        $config = [
-            'class' => TableSchema::class
-        ];
+        if ($this->_tableSchemas && array_key_exists($tableName, $this->_tableSchemas)) {
+            return $this->_tableSchemas[$tableName];
+        }
 
         $results = $this->odoo->searchRead('ir.model', [['model', '=', $tableName]], ['fields' => [
             'name',
@@ -72,19 +85,46 @@ class Schema extends Component
         ]]);
 
         if (!$results) {
-            return null;
+            return $this->_tableSchemas[$tableName] = null;
         }
-
         $result = reset($results);
 
-        $config = array_merge($config, [
-            'name' => $result['model'],
-            'fullName' => $result['model'],
+        return $this->_tableSchemas[$tableName] = $this->_createTableSchema($result);
+    }
+
+    /**
+     * @return array
+     */
+    public function findUniqueIndexes()
+    {
+        return [['id']];
+    }
+
+    /**
+     * @param string $tableName
+     * @return bool
+     */
+    public function hasTable(string $tableName): bool
+    {
+        return count($this->odoo->search('ir.model', [['model', '=', $tableName]])) > 0;
+    }
+
+    /**
+     * @param array $config
+     * @return TableSchema
+     */
+    private function _createTableSchema(array $config)
+    {
+        $model = $config['model'];
+
+        $config = [
+            'name' => $model,
+            'fullName' => $model,
             'primaryKey' => ['id'],
-        ]);
+        ];
 
         // Foreign Keys
-        $fields = $this->odoo->fieldsGet($tableName);
+        $fields = $this->odoo->fieldsGet($model);
 
         $foreignKeys = [];
         $relationFields = array_filter($fields, function($meta) {
@@ -111,32 +151,13 @@ class Schema extends Component
                 'comment' => $meta['string']
             ]);
 
-            $columns[] = $column;
+            $columns[$field] = $column;
         }
         unset($column);
 
         $config['columns'] = $columns;
 
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return Yii::createObject($config);
+        return Yii::createObject(['class' => TableSchema::class] + $config);
     }
-
-    /**
-     * @return array
-     */
-    public function findUniqueIndexes()
-    {
-        return [['id']];
-    }
-
-    /**
-     * @param string $tableName
-     * @return bool
-     */
-    public function hasTable(string $tableName): bool
-    {
-        return count($this->odoo->search('ir.model', [['model', '=', $tableName]])) > 0;
-    }
-
-
 }

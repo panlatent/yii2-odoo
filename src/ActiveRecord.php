@@ -7,6 +7,7 @@
 namespace panlatent\odoo;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\Inflector;
@@ -55,10 +56,36 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
+     * Returns the schema information of the Odoo orm table associated with this AR class.
+     * @return TableSchema the schema information of the Odoo orm table associated with this AR class.
+     * @throws InvalidConfigException if the table for the AR class does not exist.
+     */
+    public static function getTableSchema()
+    {
+        $tableSchema = static::getDb()
+            ->getSchema()
+            ->getTableSchema(static::tableName());
+
+        if ($tableSchema === null) {
+            throw new InvalidConfigException('The table does not exist: ' . static::tableName());
+        }
+
+        return $tableSchema;
+    }
+
+    /**
      * @inheritdoc
      */
     public function insert($runValidation = true, $attributes = null)
     {
         throw new NotSupportedException();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributes()
+    {
+        return array_keys(static::getTableSchema()->columns);
     }
 }
