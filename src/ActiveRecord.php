@@ -31,7 +31,7 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * @return ActiveQuery|object
      */
     public static function find()
     {
