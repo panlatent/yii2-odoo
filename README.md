@@ -60,7 +60,7 @@ Add the component to your application.
 ]
 ```
 
-The extension support Yii2 Debug extension:
+The extension support **Yii2 Debug** extension:
 
 Add the panel component to your application.
 ```php
@@ -75,7 +75,7 @@ Add the panel component to your application.
 ]
 ```
 
-The extension support Yii2 Gii extension:
+The extension support **Yii2 Gii** extension:
 
 Add the panel component to your application.
 ```php
