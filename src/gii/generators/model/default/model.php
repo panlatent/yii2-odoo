@@ -44,14 +44,14 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '<?= $generator->generateTableName($tableName) ?>';
     }
 <?php if ($generator->db !== 'db'): ?>
 
     /**
-     * @return \yii\db\Connection the database connection used by this AR class.
+     * @return \panlatent\odoo\Connection|object the odoo connection used by this AR class.
      */
     public static function getDb()
     {
