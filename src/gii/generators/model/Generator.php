@@ -49,6 +49,9 @@ class Generator extends \yii\gii\generators\model\Generator
         return 'Odoo Model Generator';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
@@ -59,7 +62,7 @@ class Generator extends \yii\gii\generators\model\Generator
             [['db', 'ns', 'tableName', 'baseClass', 'queryNs', 'queryBaseClass'], 'required'],
             [['db', 'modelClass', 'queryClass'], 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
             [['ns', 'baseClass', 'queryNs', 'queryBaseClass'], 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
-            [['tableName'], 'match', 'pattern' => '/^([\w ]+\.)?([\w\* ]+)$/', 'message' => 'Only word characters, and optionally spaces, an asterisk and/or a dot are allowed.'],
+            [['tableName'], 'match', 'pattern' => '/^([\w ]+\.)?([\w\*\. ]+)$/', 'message' => 'Only word characters, and optionally spaces, an asterisk and/or a dot are allowed.'],
             [['db'], 'validateDb'],
             [['ns', 'queryNs'], 'validateNamespace'],
             [['tableName'], 'validateTableName'],
@@ -128,6 +131,9 @@ class Generator extends \yii\gii\generators\model\Generator
         return $this->classNames[$tableName] = Inflector::id2camel($tableName, '.');
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function generateRelations()
     {
         if ($this->generateRelations === self::RELATIONS_NONE) {
