@@ -77,7 +77,9 @@ class Command extends Component
     {
         $keywords = $this->getKeywords();
 
-        return $this->odoo->searchRead($this->modelName, $this->domain, $keywords->toArray());
+        $results = $this->odoo->searchRead($this->modelName, $this->domain, $keywords->toArray());
+
+        return $results !== null ? $results : [];
     }
 
     /**
