@@ -10,6 +10,7 @@ use panlatent\odoo\ActiveQuery;
 use panlatent\odoo\ActiveRecord;
 use panlatent\odoo\Connection;
 use Yii;
+use yii\db\Schema;
 use yii\helpers\Inflector;
 
 /**
@@ -180,5 +181,70 @@ class Generator extends \yii\gii\generators\model\Generator
         }
 
         return $relations;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function generateRules($table)
+    {
+        if ($this->generateRelations !== self::RELATIONS_NONE) {
+            return parent::generateRules($table);
+        }
+
+        $types = [];
+        $lengths = [];
+
+        foreach ($table->columns as $column) {
+            if ($column->autoIncrement) {
+                continue;
+            }
+            if (!$column->allowNull && $column->defaultValue === null) {
+                $types['required'][] = $column->name;
+            }
+            switch ($column->type) {
+                case Schema::TYPE_SMALLINT:
+                case Schema::TYPE_INTEGER:
+                case Schema::TYPE_BIGINT:
+                case Schema::TYPE_TINYINT:
+                    $types['integer'][] = $column->name;
+                    break;
+                case Schema::TYPE_BOOLEAN:
+                    $types['boolean'][] = $column->name;
+                    break;
+                case Schema::TYPE_FLOAT:
+                case Schema::TYPE_DOUBLE:
+                case Schema::TYPE_DECIMAL:
+                case Schema::TYPE_MONEY:
+                    $types['number'][] = $column->name;
+                    break;
+                case Schema::TYPE_DATE:
+                case Schema::TYPE_TIME:
+                case Schema::TYPE_DATETIME:
+                case Schema::TYPE_TIMESTAMP:
+                case Schema::TYPE_JSON:
+                    $types['safe'][] = $column->name;
+                    break;
+                default: // strings
+                    if ($column->size > 0) {
+                        $lengths[$column->size][] = $column->name;
+                    } else {
+                        $types['string'][] = $column->name;
+                    }
+            }
+        }
+        $rules = [];
+        $driverName = $this->getDbDriverName();
+        foreach ($types as $type => $columns) {
+            if ($driverName === 'pgsql' && $type === 'integer') {
+                $rules[] = "[['" . implode("', '", $columns) . "'], 'default', 'value' => null]";
+            }
+            $rules[] = "[['" . implode("', '", $columns) . "'], '$type']";
+        }
+        foreach ($lengths as $length => $columns) {
+            $rules[] = "[['" . implode("', '", $columns) . "'], 'string', 'max' => $length]";
+        }
+
+        return $rules;
     }
 }

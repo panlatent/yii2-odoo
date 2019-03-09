@@ -93,11 +93,12 @@ class Schema extends Component
     }
 
     /**
+     * @param mixed|null $tableName
      * @return array
      */
-    public function findUniqueIndexes()
+    public function findUniqueIndexes($tableName): array
     {
-        return [['id']];
+        return $tableName ? [['id']] : [['id']];
     }
 
     /**

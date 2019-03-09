@@ -38,6 +38,7 @@ class FieldHelper
             case 'date':
             case 'time':
             case 'datetime':
+            case 'float':
             case 'binary':
                 return $type;
         }
@@ -69,6 +70,7 @@ class FieldHelper
             case 'many2many':
                 return 'array';
             case 'boolean':
+            case 'float':
             case 'integer':
                 return $type;
         }
