@@ -290,7 +290,7 @@ class Connection extends Component
         }
 
         if ($this->_cache) {
-            $cache =  Yii::createObject($this->_cache ?: $this->cacheComponent);
+            $cache =  Yii::createObject($this->_cache);
             if (!$cache instanceof CacheInterface) {
                 throw new InvalidConfigException('Cache component must be implements yii\caching\CacheInterface');
             }
