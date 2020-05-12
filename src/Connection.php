@@ -513,6 +513,10 @@ class Connection extends Component
             throw new Exception($response->getRpcErrorMessage(), $response->getRpcErrorCode());
         }
 
+        if ($response->getRpcErrorMessage()) {
+            throw new Exception(json_encode($response->getRpcErrorData()), $response->getRpcErrorCode());
+        }
+
         $result = $response->getRpcResult();
 
         return $result;
