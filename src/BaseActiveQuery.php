@@ -119,12 +119,14 @@ abstract class BaseActiveQuery extends Query
 
         $class = $this->modelClass;
         foreach ($rows as $row) {
-            $model = $class::instantiate($row);
+            if(!empty($row)) {
+                $model = $class::instantiate($row);
 
-            /** @var ActiveRecord $modelClass */
-            $modelClass = get_class($model);
-            $modelClass::populateRecord($model, $row);
-            $models[] = $model;
+                /** @var ActiveRecord $modelClass */
+                $modelClass = get_class($model);
+                $modelClass::populateRecord($model, $row);
+                $models[] = $model;
+            }
         }
 
         return $models;
