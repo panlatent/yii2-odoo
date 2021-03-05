@@ -17,12 +17,13 @@ use yii\helpers\StringHelper;
  * Class ActiveRecord
  *
  * @package panlatent\odoo
+ * @property int|null $id
+ * @property \DateTime|null $create_date
+ * @property \DateTime|null $write_date
  * @author Panlatent <panlatent@gmail.com>
  */
 class ActiveRecord extends BaseActiveRecord
 {
-    use ActiveRecordTrait;
-
     /**
      * @inheritdoc
      */
