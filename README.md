@@ -37,7 +37,7 @@ php composer.phar require --prefer-dist panlatent/yii2-odoo "*"
 or add
 
 ```
-"panlatent/yii2-odo": "*"
+"panlatent/yii2-odoo": "*"
 ```
 
 to the require section of your `composer.json` file.
